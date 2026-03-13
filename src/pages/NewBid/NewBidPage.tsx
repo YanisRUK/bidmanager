@@ -330,7 +330,7 @@ export function NewBidPage() {
     if (!form.bidTypeCode || !user) return;
 
     const selectedType = bidTypes?.find(
-      (t) => t.ricoh_code === form.bidTypeCode
+      (t) => t.cr5ab_code === form.bidTypeCode
     );
     if (!selectedType) return;
 
@@ -339,31 +339,31 @@ export function NewBidPage() {
 
     try {
       const newBid = await dataverseClient.createBidRequest({
-        ricoh_bidreferencenumber: `BID-${new Date().getFullYear()}-DRAFT`,
-        ricoh_title: form.title,
-        ricoh_bidtypeid: {
+        cr5ab_bidreferencenumber: `BID-${new Date().getFullYear()}-DRAFT`,
+        cr5ab_title: form.title,
+        cr5ab_bidtypeid: {
           id: selectedType.id,
-          ricoh_name: selectedType.ricoh_name,
-          ricoh_code: selectedType.ricoh_code,
+          cr5ab_name: selectedType.cr5ab_name,
+          cr5ab_code: selectedType.cr5ab_code,
         },
-        ricoh_status: BidStatus.Submitted,
-        ricoh_customername: form.customerName,
-        ricoh_customerindustry: form.customerIndustry || undefined,
-        ricoh_estimatedvalue: form.estimatedValue
+        cr5ab_status: BidStatus.Submitted,
+        cr5ab_customername: form.customerName,
+        cr5ab_customerindustry: form.customerIndustry || undefined,
+        cr5ab_estimatedvalue: form.estimatedValue
           ? Number(form.estimatedValue)
           : undefined,
-        ricoh_currency: "GBP",
-        ricoh_submissiondeadline: form.submissionDeadline,
-        ricoh_expectedawarddate: form.expectedAwardDate || undefined,
-        ricoh_contractduration: form.contractDuration
+        cr5ab_currency: "GBP",
+        cr5ab_submissiondeadline: form.submissionDeadline,
+        cr5ab_expectedawarddate: form.expectedAwardDate || undefined,
+        cr5ab_contractduration: form.contractDuration
           ? Number(form.contractDuration)
           : undefined,
-        ricoh_description: form.description,
-        ricoh_scope: form.scope || undefined,
-        ricoh_specialrequirements: form.specialRequirements || undefined,
-        ricoh_incumbentvendor: form.incumbentVendor || undefined,
-        ricoh_submittedby: user,
-        ricoh_routedto: selectedType.ricoh_routingTeam,
+        cr5ab_description: form.description,
+        cr5ab_scope: form.scope || undefined,
+        cr5ab_specialrequirements: form.specialRequirements || undefined,
+        cr5ab_incumbentvendor: form.incumbentVendor || undefined,
+        cr5ab_submittedby: user,
+        cr5ab_routedto: selectedType.cr5ab_routingteam,
       });
 
       // TODO: trigger Power Automate routing flow

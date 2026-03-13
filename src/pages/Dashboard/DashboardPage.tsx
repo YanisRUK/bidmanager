@@ -201,12 +201,12 @@ export function DashboardPage() {
 
   const kpis = useMemo(() => {
     const active = bids.filter((b) =>
-      [BidStatus.InProgress, BidStatus.InReview, BidStatus.Qualified, BidStatus.Submitted].includes(b.ricoh_status)
+      [BidStatus.InProgress, BidStatus.InReview, BidStatus.Qualified, BidStatus.Submitted].includes(b.cr5ab_status)
     );
-    const won = bids.filter((b) => b.ricoh_status === BidStatus.Won);
+    const won = bids.filter((b) => b.cr5ab_status === BidStatus.Won);
     const pipeline = bids
-      .filter((b) => b.ricoh_estimatedvalue)
-      .reduce((sum, b) => sum + (b.ricoh_estimatedvalue ?? 0), 0);
+      .filter((b) => b.cr5ab_estimatedvalue)
+      .reduce((sum, b) => sum + (b.cr5ab_estimatedvalue ?? 0), 0);
     const winRate = bids.length > 0 ? Math.round((won.length / bids.length) * 100) : 0;
 
     return { activeBids: active.length, wonBids: won.length, pipeline, winRate };
@@ -216,12 +216,12 @@ export function DashboardPage() {
     () =>
       bids
         .filter((b) =>
-          [BidStatus.Draft, BidStatus.Submitted, BidStatus.InProgress, BidStatus.InReview].includes(b.ricoh_status)
+          [BidStatus.Draft, BidStatus.Submitted, BidStatus.InProgress, BidStatus.InReview].includes(b.cr5ab_status)
         )
         .sort(
           (a, b) =>
-            new Date(a.ricoh_submissiondeadline).getTime() -
-            new Date(b.ricoh_submissiondeadline).getTime()
+            new Date(a.cr5ab_submissiondeadline).getTime() -
+            new Date(b.cr5ab_submissiondeadline).getTime()
         )
         .slice(0, 5),
     [bids]
@@ -231,7 +231,7 @@ export function DashboardPage() {
     () =>
       bids
         .filter((b) =>
-          [BidStatus.InProgress, BidStatus.InReview, BidStatus.Submitted].includes(b.ricoh_status)
+          [BidStatus.InProgress, BidStatus.InReview, BidStatus.Submitted].includes(b.cr5ab_status)
         )
         .slice(0, 6),
     [bids]
@@ -333,7 +333,7 @@ export function DashboardPage() {
               </Text>
             ) : (
               upcomingDeadlines.map((bid) => {
-                const days = daysUntil(bid.ricoh_submissiondeadline);
+                const days = daysUntil(bid.cr5ab_submissiondeadline);
                 const urgent = days <= 7;
                 return (
                   <div
@@ -341,7 +341,7 @@ export function DashboardPage() {
                     className={`${styles.calendarItem} ${urgent ? styles.calendarItemUrgent : ""}`}
                   >
                     <Text size={500} weight="bold">
-                      {formatDeadline(bid.ricoh_submissiondeadline)}
+                      {formatDeadline(bid.cr5ab_submissiondeadline)}
                     </Text>
                     <Text
                       size={200}
@@ -354,7 +354,7 @@ export function DashboardPage() {
                         maxWidth: "100px",
                       }}
                     >
-                      {bid.ricoh_title}
+                      {bid.cr5ab_title}
                     </Text>
                     <Badge
                       appearance="filled"
@@ -403,17 +403,17 @@ function PipelineRow({ bid }: { bid: BidRequest }) {
   return (
     <div className={styles.pipelineRow}>
       <Text className={styles.pipelineRef} size={200}>
-        {bid.ricoh_bidreferencenumber}
+        {bid.cr5ab_bidreferencenumber}
       </Text>
       <Text className={styles.pipelineTitle} size={300}>
-        {bid.ricoh_title}
+        {bid.cr5ab_title}
       </Text>
       <div style={{ minWidth: "110px", display: "flex", justifyContent: "center" }}>
-        <StatusBadge status={bid.ricoh_status} />
+        <StatusBadge status={bid.cr5ab_status} />
       </div>
       <Text className={styles.pipelineValue} size={200}>
-        {bid.ricoh_estimatedvalue
-          ? formatCurrency(bid.ricoh_estimatedvalue)
+        {bid.cr5ab_estimatedvalue
+          ? formatCurrency(bid.cr5ab_estimatedvalue)
           : "—"}
       </Text>
     </div>

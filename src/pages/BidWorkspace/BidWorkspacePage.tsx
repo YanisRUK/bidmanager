@@ -49,7 +49,7 @@ import { EmptyState } from "../../components/common/EmptyState";
 import { useDataverse } from "../../hooks/useDataverse";
 import { dataverseClient } from "../../lib/dataverse";
 import { ApprovalStatus, TeamRoleLabel } from "../../types/dataverse";
-import type { BidWorkspace, BidTeamMember, BidApproval } from "../../types/dataverse";
+import type { BidWorkspace, BidRoleAssignment, BidApproval } from "../../types/dataverse";
 
 // ---------------------------------------------------------------------------
 // Styles
@@ -132,16 +132,16 @@ function ApprovalBadge({ status }: { status: ApprovalStatus }) {
 // Mock team / approvals when no workspace is loaded
 // ---------------------------------------------------------------------------
 
-const MOCK_TEAM: BidTeamMember[] = [
-  { id: "tm-1", ricoh_bidworkspaceid: { id: "ws-001", ricoh_title: "" }, ricoh_userid: { id: "u1", fullName: "Sarah Mitchell", email: "s.mitchell@ricoh.co.uk" }, ricoh_role: 100000000, ricoh_isactive: true, ricoh_assigneddate: "2026-02-12T09:00:00Z", createdOn: "", modifiedOn: "", createdBy: { id: "", fullName: "", email: "" }, modifiedBy: { id: "", fullName: "", email: "" } },
-  { id: "tm-2", ricoh_bidworkspaceid: { id: "ws-001", ricoh_title: "" }, ricoh_userid: { id: "u2", fullName: "James O'Brien", email: "j.obrien@ricoh.co.uk" }, ricoh_role: 100000002, ricoh_isactive: true, ricoh_assigneddate: "2026-02-13T09:00:00Z", createdOn: "", modifiedOn: "", createdBy: { id: "", fullName: "", email: "" }, modifiedBy: { id: "", fullName: "", email: "" } },
-  { id: "tm-3", ricoh_bidworkspaceid: { id: "ws-001", ricoh_title: "" }, ricoh_userid: { id: "u3", fullName: "Priya Sharma", email: "p.sharma@ricoh.co.uk" }, ricoh_role: 100000003, ricoh_isactive: true, ricoh_assigneddate: "2026-02-14T09:00:00Z", createdOn: "", modifiedOn: "", createdBy: { id: "", fullName: "", email: "" }, modifiedBy: { id: "", fullName: "", email: "" } },
+const MOCK_TEAM: BidRoleAssignment[] = [
+  { id: "tm-1", cr5ab_bidworkspaceid: { id: "ws-001", cr5ab_title: "" }, cr5ab_userid: { id: "u1", fullName: "Sarah Mitchell", email: "s.mitchell@ricoh.co.uk" }, cr5ab_role: 100000000, cr5ab_isactive: true, cr5ab_assigneddate: "2026-02-12T09:00:00Z", createdOn: "", modifiedOn: "", createdBy: { id: "", fullName: "", email: "" }, modifiedBy: { id: "", fullName: "", email: "" } },
+  { id: "tm-2", cr5ab_bidworkspaceid: { id: "ws-001", cr5ab_title: "" }, cr5ab_userid: { id: "u2", fullName: "James O'Brien", email: "j.obrien@ricoh.co.uk" }, cr5ab_role: 100000002, cr5ab_isactive: true, cr5ab_assigneddate: "2026-02-13T09:00:00Z", createdOn: "", modifiedOn: "", createdBy: { id: "", fullName: "", email: "" }, modifiedBy: { id: "", fullName: "", email: "" } },
+  { id: "tm-3", cr5ab_bidworkspaceid: { id: "ws-001", cr5ab_title: "" }, cr5ab_userid: { id: "u3", fullName: "Priya Sharma", email: "p.sharma@ricoh.co.uk" }, cr5ab_role: 100000003, cr5ab_isactive: true, cr5ab_assigneddate: "2026-02-14T09:00:00Z", createdOn: "", modifiedOn: "", createdBy: { id: "", fullName: "", email: "" }, modifiedBy: { id: "", fullName: "", email: "" } },
 ];
 
 const MOCK_APPROVALS: BidApproval[] = [
-  { id: "ap-1", ricoh_bidworkspaceid: { id: "ws-001", ricoh_title: "" }, ricoh_title: "Technical Review", ricoh_approverstage: 1, ricoh_approverid: { id: "u3", fullName: "Priya Sharma", email: "p.sharma@ricoh.co.uk" }, ricoh_status: ApprovalStatus.Approved, ricoh_requesteddate: "2026-02-20T09:00:00Z", ricoh_respondeddate: "2026-02-22T14:00:00Z", ricoh_comments: "Technically sound. Proceed.", createdOn: "", modifiedOn: "", createdBy: { id: "", fullName: "", email: "" }, modifiedBy: { id: "", fullName: "", email: "" } },
-  { id: "ap-2", ricoh_bidworkspaceid: { id: "ws-001", ricoh_title: "" }, ricoh_title: "Commercial Review", ricoh_approverstage: 2, ricoh_approverid: { id: "u4", fullName: "Tom Watkins", email: "t.watkins@ricoh.co.uk" }, ricoh_status: ApprovalStatus.Pending, ricoh_requesteddate: "2026-02-23T09:00:00Z", createdOn: "", modifiedOn: "", createdBy: { id: "", fullName: "", email: "" }, modifiedBy: { id: "", fullName: "", email: "" } },
-  { id: "ap-3", ricoh_bidworkspaceid: { id: "ws-001", ricoh_title: "" }, ricoh_title: "Executive Sign-off", ricoh_approverstage: 3, ricoh_approverid: { id: "u5", fullName: "Helen Cross", email: "h.cross@ricoh.co.uk" }, ricoh_status: ApprovalStatus.Pending, ricoh_requesteddate: "2026-02-23T09:00:00Z", createdOn: "", modifiedOn: "", createdBy: { id: "", fullName: "", email: "" }, modifiedBy: { id: "", fullName: "", email: "" } },
+  { id: "ap-1", cr5ab_bidworkspaceid: { id: "ws-001", cr5ab_title: "" }, cr5ab_title: "Technical Review", cr5ab_approverstage: 1, cr5ab_approverid: { id: "u3", fullName: "Priya Sharma", email: "p.sharma@ricoh.co.uk" }, cr5ab_status: ApprovalStatus.Approved, cr5ab_requesteddate: "2026-02-20T09:00:00Z", cr5ab_respondeddate: "2026-02-22T14:00:00Z", cr5ab_comments: "Technically sound. Proceed.", createdOn: "", modifiedOn: "", createdBy: { id: "", fullName: "", email: "" }, modifiedBy: { id: "", fullName: "", email: "" } },
+  { id: "ap-2", cr5ab_bidworkspaceid: { id: "ws-001", cr5ab_title: "" }, cr5ab_title: "Commercial Review", cr5ab_approverstage: 2, cr5ab_approverid: { id: "u4", fullName: "Tom Watkins", email: "t.watkins@ricoh.co.uk" }, cr5ab_status: ApprovalStatus.Pending, cr5ab_requesteddate: "2026-02-23T09:00:00Z", createdOn: "", modifiedOn: "", createdBy: { id: "", fullName: "", email: "" }, modifiedBy: { id: "", fullName: "", email: "" } },
+  { id: "ap-3", cr5ab_bidworkspaceid: { id: "ws-001", cr5ab_title: "" }, cr5ab_title: "Executive Sign-off", cr5ab_approverstage: 3, cr5ab_approverid: { id: "u5", fullName: "Helen Cross", email: "h.cross@ricoh.co.uk" }, cr5ab_status: ApprovalStatus.Pending, cr5ab_requesteddate: "2026-02-23T09:00:00Z", createdOn: "", modifiedOn: "", createdBy: { id: "", fullName: "", email: "" }, modifiedBy: { id: "", fullName: "", email: "" } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -174,9 +174,9 @@ export function BidWorkspacePage() {
   if (error) return <ErrorState message={error} onRetry={refresh} />;
 
   // Use workspace data or fall back to bid request details
-  const title = workspace?.ricoh_title ?? bidRequest?.ricoh_title ?? "Bid Workspace";
-  const status = workspace?.ricoh_status ?? bidRequest?.ricoh_status;
-  const progress = workspace?.ricoh_completionpercentage ?? 0;
+  const title = workspace?.cr5ab_title ?? bidRequest?.cr5ab_title ?? "Bid Workspace";
+  const status = workspace?.cr5ab_status ?? bidRequest?.cr5ab_status;
+  const progress = workspace?.cr5ab_completionpercentage ?? 0;
   const teamMembers = workspace?.teamMembers ?? MOCK_TEAM;
   const approvals = workspace?.approvals ?? MOCK_APPROVALS;
   const documents = workspace?.documents ?? [];
@@ -186,8 +186,8 @@ export function BidWorkspacePage() {
       <PageHeader
         title={title}
         subtitle={
-          workspace?.ricoh_bidrequestid?.ricoh_bidreferencenumber ??
-          bidRequest?.ricoh_bidreferencenumber ??
+          workspace?.cr5ab_bidrequestid?.cr5ab_bidreferencenumber ??
+          bidRequest?.cr5ab_bidreferencenumber ??
           "Workspace"
         }
         actions={
@@ -199,12 +199,12 @@ export function BidWorkspacePage() {
             >
               Back to Register
             </Button>
-            {workspace?.ricoh_sharepointfolderurl && (
+            {workspace?.cr5ab_sharepointfolderurl && (
               <Button
                 appearance="secondary"
                 icon={<LinkRegular />}
                 as="a"
-                href={workspace.ricoh_sharepointfolderurl}
+                href={workspace.cr5ab_sharepointfolderurl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -224,7 +224,7 @@ export function BidWorkspacePage() {
         <div className={styles.metaItem}>
           <Text size={200} style={{ color: tokens.colorNeutralForeground3 }}>Bid Manager</Text>
           <Text size={300} weight="semibold">
-            {workspace?.ricoh_bidmanagerid?.fullName ?? "—"}
+            {workspace?.cr5ab_bidmanagerid?.fullName ?? "—"}
           </Text>
         </div>
         <div className={styles.metaItem}>
@@ -286,14 +286,14 @@ export function BidWorkspacePage() {
 // ---------------------------------------------------------------------------
 
 function OverviewTab({ workspace, bidRequest }: { workspace: BidWorkspace | null; bidRequest: any }) {
-  const ref = workspace?.ricoh_bidrequestid ?? bidRequest;
+  const ref = workspace?.cr5ab_bidrequestid ?? bidRequest;
 
   const rows = [
-    ["Reference", ref?.ricoh_bidreferencenumber ?? "—"],
-    ["Title", ref?.ricoh_title ?? workspace?.ricoh_title ?? "—"],
+    ["Reference", ref?.cr5ab_bidreferencenumber ?? "—"],
+    ["Title", ref?.cr5ab_title ?? workspace?.cr5ab_title ?? "—"],
     ["Created", workspace ? new Date(workspace.createdOn).toLocaleDateString("en-GB") : "—"],
-    ["SharePoint", workspace?.ricoh_sharepointfolderurl ?? "Not yet configured"],
-    ["Teams Channel", workspace?.ricoh_teamschannelurl ?? "Not yet configured"],
+    ["SharePoint", workspace?.cr5ab_sharepointfolderurl ?? "Not yet configured"],
+    ["Teams Channel", workspace?.cr5ab_teamschannelurl ?? "Not yet configured"],
   ];
 
   return (
@@ -312,7 +312,7 @@ function OverviewTab({ workspace, bidRequest }: { workspace: BidWorkspace | null
 // Tab: Team
 // ---------------------------------------------------------------------------
 
-function TeamTab({ members }: { members: BidTeamMember[] }) {
+function TeamTab({ members }: { members: BidRoleAssignment[] }) {
   const styles = useStyles();
 
   return (
@@ -342,25 +342,25 @@ function TeamTab({ members }: { members: BidTeamMember[] }) {
               <TableRow key={m.id}>
                 <TableCell>
                   <TableCellLayout>
-                    <Text weight="semibold" size={300}>{m.ricoh_userid.fullName}</Text>
+                    <Text weight="semibold" size={300}>{m.cr5ab_userid.fullName}</Text>
                   </TableCellLayout>
                 </TableCell>
                 <TableCell>
                   <TableCellLayout>
                     <Text size={200} style={{ color: tokens.colorNeutralForeground3 }}>
-                      {m.ricoh_userid.email}
+                      {m.cr5ab_userid.email}
                     </Text>
                   </TableCellLayout>
                 </TableCell>
                 <TableCell>
                   <TableCellLayout>
-                    <Text size={300}>{TeamRoleLabel[m.ricoh_role as keyof typeof TeamRoleLabel]}</Text>
+                    <Text size={300}>{TeamRoleLabel[m.cr5ab_role as keyof typeof TeamRoleLabel]}</Text>
                   </TableCellLayout>
                 </TableCell>
                 <TableCell>
                   <TableCellLayout>
-                    <Badge appearance="filled" color={m.ricoh_isactive ? "success" : "subtle"} size="small">
-                      {m.ricoh_isactive ? "Active" : "Inactive"}
+                    <Badge appearance="filled" color={m.cr5ab_isactive ? "success" : "subtle"} size="small">
+                      {m.cr5ab_isactive ? "Active" : "Inactive"}
                     </Badge>
                   </TableCellLayout>
                 </TableCell>
@@ -395,23 +395,23 @@ function ApprovalsTab({ approvals }: { approvals: BidApproval[] }) {
       ) : (
         approvals.map((ap) => (
           <div key={ap.id} className={styles.approvalRow}>
-            <div className={styles.stageNumber}>{ap.ricoh_approverstage}</div>
+            <div className={styles.stageNumber}>{ap.cr5ab_approverstage}</div>
             <div style={{ flexGrow: 1 }}>
-              <Text weight="semibold" size={300}>{ap.ricoh_title}</Text>
+              <Text weight="semibold" size={300}>{ap.cr5ab_title}</Text>
               <Text size={200} style={{ display: "block", color: tokens.colorNeutralForeground3 }}>
-                {ap.ricoh_approverid.fullName} — {ap.ricoh_approverid.email}
+                {ap.cr5ab_approverid.fullName} — {ap.cr5ab_approverid.email}
               </Text>
-              {ap.ricoh_comments && (
+              {ap.cr5ab_comments && (
                 <Text size={200} style={{ color: tokens.colorNeutralForeground2, fontStyle: "italic" }}>
-                  "{ap.ricoh_comments}"
+                  "{ap.cr5ab_comments}"
                 </Text>
               )}
             </div>
             <div style={{ minWidth: "90px", textAlign: "right" }}>
-              <ApprovalBadge status={ap.ricoh_status} />
-              {ap.ricoh_respondeddate && (
+              <ApprovalBadge status={ap.cr5ab_status} />
+              {ap.cr5ab_respondeddate && (
                 <Text size={100} style={{ display: "block", color: tokens.colorNeutralForeground3, marginTop: "4px" }}>
-                  {new Date(ap.ricoh_respondeddate).toLocaleDateString("en-GB")}
+                  {new Date(ap.cr5ab_respondeddate).toLocaleDateString("en-GB")}
                 </Text>
               )}
             </div>
@@ -450,9 +450,9 @@ function DocumentsTab({ documents }: { documents: any[] }) {
           <div key={doc.id} className={styles.docRow}>
             <DocumentRegular style={{ fontSize: "20px", color: tokens.colorNeutralForeground3, flexShrink: 0 }} />
             <div style={{ flexGrow: 1 }}>
-              <Text weight="semibold" size={300}>{doc.ricoh_title}</Text>
+              <Text weight="semibold" size={300}>{doc.cr5ab_title}</Text>
               <Text size={200} style={{ display: "block", color: tokens.colorNeutralForeground3 }}>
-                {doc.ricoh_documenttype} · v{doc.ricoh_version}
+                {doc.cr5ab_documenttype} · v{doc.cr5ab_version}
               </Text>
             </div>
             <Button
@@ -460,7 +460,7 @@ function DocumentsTab({ documents }: { documents: any[] }) {
               size="small"
               icon={<LinkRegular />}
               as="a"
-              href={doc.ricoh_sharepointurl}
+              href={doc.cr5ab_sharepointurl}
               target="_blank"
               rel="noopener noreferrer"
             >

@@ -150,27 +150,27 @@ function BidTypesTab() {
               <TableRow key={bt.id}>
                 <TableCell>
                   <TableCellLayout>
-                    <Text weight="semibold" size={300}>{bt.ricoh_name}</Text>
+                    <Text weight="semibold" size={300}>{bt.cr5ab_name}</Text>
                     <Text size={200} style={{ display: "block", color: tokens.colorNeutralForeground3 }}>
-                      {bt.ricoh_description}
+                      {bt.cr5ab_description}
                     </Text>
                   </TableCellLayout>
                 </TableCell>
                 <TableCell>
                   <TableCellLayout>
                     <Badge appearance="outline" color="informative" size="medium">
-                      {bt.ricoh_routingTeam}
+                      {bt.cr5ab_routingteam}
                     </Badge>
                   </TableCellLayout>
                 </TableCell>
                 <TableCell>
                   <TableCellLayout>
-                    <Text size={200}>{bt.ricoh_routingEmail}</Text>
+                    <Text size={200}>{bt.cr5ab_routingemail}</Text>
                   </TableCellLayout>
                 </TableCell>
                 <TableCell>
                   <TableCellLayout>
-                    <Text size={300}>{bt.ricoh_slaResponseDays}</Text>
+                    <Text size={300}>{bt.cr5ab_slaresponsedays}</Text>
                   </TableCellLayout>
                 </TableCell>
                 <TableCell>

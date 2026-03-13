@@ -134,19 +134,19 @@ export function BidRegisterPage() {
       const q = search.toLowerCase();
       bids = bids.filter(
         (b) =>
-          b.ricoh_title.toLowerCase().includes(q) ||
-          b.ricoh_bidreferencenumber.toLowerCase().includes(q) ||
-          b.ricoh_customername.toLowerCase().includes(q)
+          b.cr5ab_title.toLowerCase().includes(q) ||
+          b.cr5ab_bidreferencenumber.toLowerCase().includes(q) ||
+          b.cr5ab_customername.toLowerCase().includes(q)
       );
     }
 
     if (statusFilter !== ALL_STATUSES) {
-      bids = bids.filter((b) => b.ricoh_status === Number(statusFilter));
+      bids = bids.filter((b) => b.cr5ab_status === Number(statusFilter));
     }
 
     if (typeFilter !== ALL_TYPES) {
       bids = bids.filter(
-        (b) => b.ricoh_bidtypeid.ricoh_code === Number(typeFilter)
+        (b) => b.cr5ab_bidtypeid.cr5ab_code === Number(typeFilter)
       );
     }
 
@@ -244,45 +244,45 @@ export function BidRegisterPage() {
                   <TableCell>
                     <TableCellLayout>
                       <Text className={styles.refCell}>
-                        {bid.ricoh_bidreferencenumber}
+                        {bid.cr5ab_bidreferencenumber}
                       </Text>
                     </TableCellLayout>
                   </TableCell>
                   <TableCell>
                     <TableCellLayout>
                       <Text weight="semibold" size={300}>
-                        {bid.ricoh_title}
+                        {bid.cr5ab_title}
                       </Text>
                     </TableCellLayout>
                   </TableCell>
                   <TableCell>
                     <TableCellLayout>
-                      <Text size={300}>{bid.ricoh_customername}</Text>
+                      <Text size={300}>{bid.cr5ab_customername}</Text>
                     </TableCellLayout>
                   </TableCell>
                   <TableCell>
                     <TableCellLayout>
                       <Text size={200} style={{ color: tokens.colorNeutralForeground3 }}>
-                        {BidTypeLabel[bid.ricoh_bidtypeid.ricoh_code as BidTypeCode]}
+                        {BidTypeLabel[bid.cr5ab_bidtypeid.cr5ab_code as BidTypeCode]}
                       </Text>
                     </TableCellLayout>
                   </TableCell>
                   <TableCell>
                     <TableCellLayout>
-                      <StatusBadge status={bid.ricoh_status} />
+                      <StatusBadge status={bid.cr5ab_status} />
                     </TableCellLayout>
                   </TableCell>
                   <TableCell>
                     <TableCellLayout>
                       <Text size={200} className={styles.deadlineCell}>
-                        {formatDate(bid.ricoh_submissiondeadline)}
+                        {formatDate(bid.cr5ab_submissiondeadline)}
                       </Text>
                     </TableCellLayout>
                   </TableCell>
                   <TableCell>
                     <TableCellLayout>
                       <Text size={200} className={styles.valueCell}>
-                        {formatCurrency(bid.ricoh_estimatedvalue)}
+                        {formatCurrency(bid.cr5ab_estimatedvalue)}
                       </Text>
                     </TableCellLayout>
                   </TableCell>
@@ -292,7 +292,7 @@ export function BidRegisterPage() {
                         appearance="subtle"
                         icon={<ArrowRightRegular />}
                         size="small"
-                        aria-label={`Open ${bid.ricoh_title}`}
+                        aria-label={`Open ${bid.cr5ab_title}`}
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate(`/workspace?bidId=${bid.id}`);

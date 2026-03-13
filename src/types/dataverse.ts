@@ -1,13 +1,13 @@
 /**
  * Dataverse Data Model for Ricoh Bid Management System
  *
- * Tables (Dataverse logical names use lowercase with publisher prefix, e.g. ricoh_):
- *   ricoh_bidrequest      – every incoming bid/opportunity
- *   ricoh_bidworkspace    – workspace created once a bid is accepted / in-flight
- *   ricoh_bidtype         – lookup: 4 bid types
- *   ricoh_bidteammember   – junction: user roles per workspace
- *   ricoh_bidapproval     – approval records linked to a workspace
- *   ricoh_biddocument     – SharePoint document references per workspace
+ * Table logical names (publisher prefix cr5ab_):
+ *   cr5ab_bidrequest        – every incoming bid/opportunity
+ *   cr5ab_bidworkspace      – workspace created once a bid is in-flight
+ *   cr5ab_bidtype           – lookup: 4 bid types
+ *   cr5ab_bidroleassignment – user roles per workspace
+ *   cr5ab_approval          – approval records linked to a workspace
+ *   cr5ab_bidstatus         – bid status lookup
  */
 
 // ---------------------------------------------------------------------------
@@ -64,11 +64,11 @@ export const BidStatusColor: Record<BidStatus, BidStatusBadge> = {
 };
 
 export enum TeamRole {
-  BidManager    = 100000000,
+  BidManager     = 100000000,
   BidCoordinator = 100000001,
-  SME           = 100000002,
-  Approver      = 100000003,
-  Reviewer      = 100000004,
+  SME            = 100000002,
+  Approver       = 100000003,
+  Reviewer       = 100000004,
 }
 
 export const TeamRoleLabel: Record<TeamRole, string> = {
@@ -90,164 +90,154 @@ export enum ApprovalStatus {
 // ---------------------------------------------------------------------------
 
 export interface DataverseRecord {
-  /** GUID primary key */
   id: string;
-  createdOn: string;   // ISO 8601
-  modifiedOn: string;  // ISO 8601
+  createdOn: string;
+  modifiedOn: string;
   createdBy: DataverseUser;
   modifiedBy: DataverseUser;
 }
 
 // ---------------------------------------------------------------------------
-// Dataverse system user (simplified)
+// Dataverse system user
 // ---------------------------------------------------------------------------
 
 export interface DataverseUser {
   id: string;
   fullName: string;
   email: string;
-  /** Azure AD object ID */
   azureObjectId?: string;
 }
 
 // ---------------------------------------------------------------------------
-// ricoh_bidtype  (mostly a lookup / reference table)
+// cr5ab_bidtype
 // ---------------------------------------------------------------------------
 
 export interface BidType extends DataverseRecord {
-  ricoh_code: BidTypeCode;
-  ricoh_name: string;
-  ricoh_description: string;
-  /** Which team / queue to route to */
-  ricoh_routingTeam: string;
-  /** Email address for routing notifications */
-  ricoh_routingEmail: string;
-  /** SLA days to first response */
-  ricoh_slaResponseDays: number;
+  cr5ab_code: BidTypeCode;
+  cr5ab_name: string;
+  cr5ab_description: string;
+  cr5ab_routingteam: string;
+  cr5ab_routingemail: string;
+  cr5ab_slaresponsedays: number;
 }
 
 // ---------------------------------------------------------------------------
-// ricoh_bidrequest  (intake form submission)
+// cr5ab_bidrequest
 // ---------------------------------------------------------------------------
 
 export interface BidRequest extends DataverseRecord {
-  ricoh_bidreferencenumber: string;       // auto-generated, e.g. BID-2026-00042
-  ricoh_title: string;
-  ricoh_bidtypeid: Pick<BidType, "id" | "ricoh_name" | "ricoh_code">;
-  ricoh_status: BidStatus;
+  cr5ab_bidreferencenumber: string;
+  cr5ab_title: string;
+  cr5ab_bidtypeid: Pick<BidType, "id" | "cr5ab_name" | "cr5ab_code">;
+  cr5ab_status: BidStatus;
 
-  // Customer / opportunity details
-  ricoh_customername: string;
-  ricoh_customerindustry?: string;
-  ricoh_estimatedvalue?: number;          // GBP
-  ricoh_currency: string;                 // default "GBP"
+  cr5ab_customername: string;
+  cr5ab_customerindustry?: string;
+  cr5ab_estimatedvalue?: number;
+  cr5ab_currency: string;
 
-  // Dates
-  ricoh_submissiondeadline: string;       // ISO 8601
-  ricoh_expectedawarddate?: string;
-  ricoh_contractstartdate?: string;
-  ricoh_contractduration?: number;        // months
+  cr5ab_submissiondeadline: string;
+  cr5ab_expectedawarddate?: string;
+  cr5ab_contractstartdate?: string;
+  cr5ab_contractduration?: number;
 
-  // Narrative
-  ricoh_description: string;
-  ricoh_scope?: string;
-  ricoh_specialrequirements?: string;
-  ricoh_incumbentvendor?: string;
+  cr5ab_description: string;
+  cr5ab_scope?: string;
+  cr5ab_specialrequirements?: string;
+  cr5ab_incumbentvendor?: string;
 
-  // Routing / ownership
-  ricoh_submittedby: DataverseUser;
-  ricoh_assignedto?: DataverseUser;
-  ricoh_routedto?: string;                // team name
+  cr5ab_submittedby: DataverseUser;
+  cr5ab_assignedto?: DataverseUser;
+  cr5ab_routedto?: string;
 
-  // Linked workspace (set once workspace created)
-  ricoh_bidworkspaceid?: Pick<BidWorkspace, "id" | "ricoh_title">;
-
-  // Bid-type-specific fields (stored as JSON in a multiline text column,
-  // parsed on the client)
-  ricoh_typespecificdata?: string;
+  cr5ab_bidworkspaceid?: Pick<BidWorkspace, "id" | "cr5ab_title">;
+  cr5ab_typespecificdata?: string;
 }
 
 // ---------------------------------------------------------------------------
-// ricoh_bidworkspace  (active bid workspace)
+// cr5ab_bidworkspace
 // ---------------------------------------------------------------------------
 
 export interface BidWorkspace extends DataverseRecord {
-  ricoh_title: string;
-  ricoh_bidrequestid: Pick<BidRequest, "id" | "ricoh_title" | "ricoh_bidreferencenumber">;
-  ricoh_status: BidStatus;
-  ricoh_bidmanagerid: DataverseUser;
+  cr5ab_title: string;
+  cr5ab_bidrequestid: Pick<BidRequest, "id" | "cr5ab_title" | "cr5ab_bidreferencenumber">;
+  cr5ab_status: BidStatus;
+  cr5ab_bidmanagerid: DataverseUser;
+  cr5ab_completionpercentage: number;
+  cr5ab_sharepointfolderurl?: string;
+  cr5ab_teamschannelurl?: string;
+  cr5ab_wonlostdate?: string;
+  cr5ab_wonlostreason?: string;
 
-  // Progress (0-100)
-  ricoh_completionpercentage: number;
-
-  // SharePoint document library root URL for this workspace
-  ricoh_sharepointfolderurl?: string;
-
-  // Teams channel deep-link
-  ricoh_teamschannelurl?: string;
-
-  // Win/loss data
-  ricoh_wonlostdate?: string;
-  ricoh_wonlostreason?: string;
-
-  // Relationships (loaded separately / expanded)
-  teamMembers?: BidTeamMember[];
+  // Expanded relationships
+  teamMembers?: BidRoleAssignment[];
   approvals?: BidApproval[];
   documents?: BidDocument[];
 }
 
 // ---------------------------------------------------------------------------
-// ricoh_bidteammember
+// cr5ab_bidroleassignment
 // ---------------------------------------------------------------------------
 
-export interface BidTeamMember extends DataverseRecord {
-  ricoh_bidworkspaceid: Pick<BidWorkspace, "id" | "ricoh_title">;
-  ricoh_userid: DataverseUser;
-  ricoh_role: TeamRole;
-  ricoh_isactive: boolean;
-  ricoh_assigneddate: string;
+export interface BidRoleAssignment extends DataverseRecord {
+  cr5ab_bidworkspaceid: Pick<BidWorkspace, "id" | "cr5ab_title">;
+  cr5ab_userid: DataverseUser;
+  cr5ab_role: TeamRole;
+  cr5ab_isactive: boolean;
+  cr5ab_assigneddate: string;
 }
 
 // ---------------------------------------------------------------------------
-// ricoh_bidapproval
+// cr5ab_approval
 // ---------------------------------------------------------------------------
 
 export interface BidApproval extends DataverseRecord {
-  ricoh_bidworkspaceid: Pick<BidWorkspace, "id" | "ricoh_title">;
-  ricoh_title: string;
-  ricoh_approverstage: number;            // 1, 2, 3 …
-  ricoh_approverid: DataverseUser;
-  ricoh_status: ApprovalStatus;
-  ricoh_requesteddate: string;
-  ricoh_respondeddate?: string;
-  ricoh_comments?: string;
+  cr5ab_bidworkspaceid: Pick<BidWorkspace, "id" | "cr5ab_title">;
+  cr5ab_title: string;
+  cr5ab_approverstage: number;
+  cr5ab_approverid: DataverseUser;
+  cr5ab_status: ApprovalStatus;
+  cr5ab_requesteddate: string;
+  cr5ab_respondeddate?: string;
+  cr5ab_comments?: string;
 }
 
 // ---------------------------------------------------------------------------
-// ricoh_biddocument  (reference to SharePoint document)
+// cr5ab_bidstatus (lookup table)
 // ---------------------------------------------------------------------------
 
-export interface BidDocument extends DataverseRecord {
-  ricoh_bidworkspaceid: Pick<BidWorkspace, "id" | "ricoh_title">;
-  ricoh_title: string;
-  ricoh_documenttype: string;             // e.g. "Response", "Pricing", "Legal"
-  ricoh_sharepointurl: string;
-  ricoh_uploadedby: DataverseUser;
-  ricoh_filesize?: number;                // bytes
-  ricoh_version: string;
+export interface BidStatusRecord extends DataverseRecord {
+  cr5ab_name: string;
+  cr5ab_statuscode: BidStatus;
+  cr5ab_description?: string;
 }
 
 // ---------------------------------------------------------------------------
-// API / SDK wrappers
+// BidDocument (SharePoint reference — not a Dataverse table, stored as JSON
+// in a multiline text column on BidWorkspace or as a separate note record)
+// ---------------------------------------------------------------------------
+
+export interface BidDocument {
+  id: string;
+  cr5ab_title: string;
+  cr5ab_documenttype: string;
+  cr5ab_sharepointurl: string;
+  cr5ab_uploadedby: DataverseUser;
+  cr5ab_filesize?: number;
+  cr5ab_version: string;
+}
+
+// ---------------------------------------------------------------------------
+// Query helpers
 // ---------------------------------------------------------------------------
 
 export interface DataverseQueryOptions {
-  filter?: string;    // OData $filter
-  select?: string[];  // $select columns
-  expand?: string[];  // $expand
-  orderBy?: string;   // $orderby
-  top?: number;       // $top
-  skip?: number;      // $skip
+  filter?: string;
+  select?: string[];
+  expand?: string[];
+  orderBy?: string;
+  top?: number;
+  skip?: number;
 }
 
 export interface PagedResult<T> {
