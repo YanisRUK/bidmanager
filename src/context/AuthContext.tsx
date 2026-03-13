@@ -1,12 +1,12 @@
 /**
  * AuthContext
  *
- * Wraps the Power Apps SDK PowerProvider and exposes the current user and
- * authentication state throughout the app.
+ * Wraps the official @microsoft/power-apps SDK and exposes the current user
+ * and authentication state throughout the app.
  *
- * In production this relies on @microsoft/powerapps-code-apps being available
- * inside the Power Apps runtime. During local development (npm run dev) we
- * fall back to a mock user so the UI is fully explorable without the SDK.
+ * In production this runs inside the Power Apps host which provides the real
+ * context. During local development (npm run dev via the powerApps() Vite
+ * plugin) it falls back to a mock user so the UI is fully explorable.
  */
 
 import {
@@ -16,6 +16,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import * as app from "@microsoft/power-apps/app";
 import type { DataverseUser } from "../types/dataverse";
 
 // ---------------------------------------------------------------------------
@@ -26,12 +27,10 @@ export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   user: DataverseUser | null;
-  /** Error message if auth failed */
   error: string | null;
 }
 
 export interface AuthContextValue extends AuthState {
-  /** Sign out (no-op in dev mode) */
   signOut: () => void;
 }
 
@@ -69,61 +68,45 @@ export function AuthProvider({ children }: AuthProviderProps) {
   });
 
   useEffect(() => {
-    // Attempt to load the Power Apps SDK user context.
-    // The SDK is only available inside the Power Apps runtime; we gracefully
-    // degrade to the dev mock when it is absent.
     async function initAuth() {
       try {
-        // Dynamic import so the bundle doesn't hard-fail in dev when the
-        // package isn't installed. Cast to unknown to avoid type errors when
-        // the package is absent.
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore – package only exists inside the Power Apps runtime
-        const sdk = await (import("@microsoft/powerapps-code-apps") as Promise<unknown>).catch(
-          () => null
-        ) as Record<string, unknown> | null;
+        const context = await app.getContext();
+        const sdkUser = context?.user;
 
-        if (sdk) {
-          // SDK present — retrieve the authenticated user via the context API.
-          // The exact API surface depends on the SDK version; adjust if needed.
-          const getPowerAppsContext = sdk["getPowerAppsContext"] as (() => Promise<any>) | undefined;
-          const context = await getPowerAppsContext?.();
-          const sdkUser = context?.user;
-
-          if (sdkUser) {
-            setState({
-              isAuthenticated: true,
-              isLoading: false,
-              user: {
-                id: sdkUser.id ?? "",
-                fullName: sdkUser.displayName ?? sdkUser.name ?? "",
-                email: sdkUser.email ?? "",
-                azureObjectId: sdkUser.azureObjectId,
-              },
-              error: null,
-            });
-            return;
-          }
+        if (sdkUser?.userPrincipalName) {
+          setState({
+            isAuthenticated: true,
+            isLoading: false,
+            user: {
+              id: sdkUser.objectId ?? "",
+              fullName: sdkUser.fullName ?? sdkUser.userPrincipalName,
+              email: sdkUser.userPrincipalName,
+              azureObjectId: sdkUser.objectId,
+            },
+            error: null,
+          });
+        } else {
+          // Running outside Power Apps host (bare browser) — use dev mock
+          console.info(
+            "[AuthProvider] No Power Apps user context. Using dev mock user."
+          );
+          setState({
+            isAuthenticated: true,
+            isLoading: false,
+            user: DEV_USER,
+            error: null,
+          });
         }
-
-        // SDK absent or user not available — use dev mock.
+      } catch {
+        // getContext() throws when not inside the Power Apps host — use dev mock
         console.info(
-          "[AuthProvider] Power Apps SDK not available. Using dev mock user."
+          "[AuthProvider] Power Apps host not detected. Using dev mock user."
         );
         setState({
           isAuthenticated: true,
           isLoading: false,
           user: DEV_USER,
           error: null,
-        });
-      } catch (err) {
-        const message =
-          err instanceof Error ? err.message : "Authentication failed";
-        setState({
-          isAuthenticated: false,
-          isLoading: false,
-          user: null,
-          error: message,
         });
       }
     }
@@ -132,12 +115,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   function signOut() {
-    setState({
-      isAuthenticated: false,
-      isLoading: false,
-      user: null,
-      error: null,
-    });
+    setState({ isAuthenticated: false, isLoading: false, user: null, error: null });
   }
 
   return (
@@ -153,8 +131,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 export function useAuth(): AuthContextValue {
   const ctx = useContext(AuthContext);
-  if (!ctx) {
-    throw new Error("useAuth must be used within <AuthProvider>");
-  }
+  if (!ctx) throw new Error("useAuth must be used within <AuthProvider>");
   return ctx;
 }

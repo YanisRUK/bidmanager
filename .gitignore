@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Power Apps CLI — contains environment ID and auth state, do not commit
+power.config.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
