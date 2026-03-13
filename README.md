@@ -1,0 +1,2 @@
+# bidmanager
+Bid Management Software
