@@ -22,6 +22,7 @@ import {
   TableCell,
   TableCellLayout,
   Card,
+  Badge,
 } from "@fluentui/react-components";
 import {
   AddSquareRegular,
@@ -40,6 +41,9 @@ import {
   BidStatusLabel,
   BidTypeLabel,
   BidTypeCode,
+  BidSourceLabel,
+  OpportunityStageLabel,
+  OpportunityStageColor,
 } from "../../types/dataverse";
 
 // ---------------------------------------------------------------------------
@@ -109,6 +113,7 @@ function formatDate(iso: string) {
 
 const ALL_STATUSES = "all";
 const ALL_TYPES = "all";
+const ALL_STAGES = "all";
 
 // ---------------------------------------------------------------------------
 // Page
@@ -121,6 +126,7 @@ export function BidRegisterPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>(ALL_STATUSES);
   const [typeFilter, setTypeFilter] = useState<string>(ALL_TYPES);
+  const [stageFilter, setStageFilter] = useState<string>(ALL_STAGES);
 
   const { data, isLoading, error, refresh } = useDataverse(
     () => dataverseClient.getBidRequests(),
@@ -150,8 +156,12 @@ export function BidRegisterPage() {
       );
     }
 
+    if (stageFilter !== ALL_STAGES) {
+      bids = bids.filter((b) => String(b.cr5ab_opportunitystage ?? "") === stageFilter);
+    }
+
     return bids;
-  }, [data, search, statusFilter, typeFilter]);
+  }, [data, search, statusFilter, typeFilter, stageFilter]);
 
   if (isLoading) return <LoadingState label="Loading bid register..." />;
   if (error) return <ErrorState message={error} onRetry={refresh} />;
@@ -159,8 +169,8 @@ export function BidRegisterPage() {
   return (
     <div>
       <PageHeader
-        title="Bid Register"
-        subtitle={`${data?.totalCount ?? 0} total bids`}
+        title="Bid Workspaces"
+        subtitle={`${data?.totalCount ?? 0} bids — select one to open its workspace`}
         actions={
           <Button
             appearance="primary"
@@ -207,6 +217,16 @@ export function BidRegisterPage() {
               </option>
             ))}
           </Select>
+          <Select
+            value={stageFilter}
+            onChange={(_, d) => setStageFilter(d.value)}
+            aria-label="Filter by stage"
+          >
+            <option value={ALL_STAGES}>All Stages</option>
+            {Object.entries(OpportunityStageLabel).map(([code, label]) => (
+              <option key={code} value={code}>{label}</option>
+            ))}
+          </Select>
         </div>
         <Text size={200} className={styles.rowCount}>
           {filtered.length} result{filtered.length !== 1 ? "s" : ""}
@@ -228,6 +248,8 @@ export function BidRegisterPage() {
                 <TableHeaderCell>Title</TableHeaderCell>
                 <TableHeaderCell>Customer</TableHeaderCell>
                 <TableHeaderCell>Type</TableHeaderCell>
+                <TableHeaderCell>Stage</TableHeaderCell>
+                <TableHeaderCell>Source</TableHeaderCell>
                 <TableHeaderCell>Status</TableHeaderCell>
                 <TableHeaderCell>Deadline</TableHeaderCell>
                 <TableHeaderCell>Value</TableHeaderCell>
@@ -264,6 +286,26 @@ export function BidRegisterPage() {
                     <TableCellLayout>
                       <Text size={200} style={{ color: tokens.colorNeutralForeground3 }}>
                         {BidTypeLabel[bid.cr5ab_bidtypeid.cr5ab_code as BidTypeCode]}
+                      </Text>
+                    </TableCellLayout>
+                  </TableCell>
+                  <TableCell>
+                    <TableCellLayout>
+                      {bid.cr5ab_opportunitystage !== undefined ? (
+                        <Badge appearance="filled" color={OpportunityStageColor[bid.cr5ab_opportunitystage]} size="small">
+                          {OpportunityStageLabel[bid.cr5ab_opportunitystage]}
+                        </Badge>
+                      ) : <Text size={200} style={{ color: tokens.colorNeutralForeground4 }}>—</Text>}
+                    </TableCellLayout>
+                  </TableCell>
+                  <TableCell>
+                    <TableCellLayout>
+                      <Text size={200} style={{ color: tokens.colorNeutralForeground3 }}>
+                        {bid.cr5ab_source !== undefined
+                          ? bid.cr5ab_sourceportalname
+                            ? `${BidSourceLabel[bid.cr5ab_source]} — ${bid.cr5ab_sourceportalname}`
+                            : BidSourceLabel[bid.cr5ab_source]
+                          : "—"}
                       </Text>
                     </TableCellLayout>
                   </TableCell>

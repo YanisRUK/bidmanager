@@ -355,8 +355,8 @@ function SystemTab() {
         {[
           ["App Version", "0.1.0"],
           ["Environment", import.meta.env.DEV ? "Development (mock data)" : "Production"],
-          ["Power Apps SDK", "Not loaded (dev mode)"],
-          ["Dataverse Publisher Prefix", "ricoh_"],
+          ["Power Apps SDK", import.meta.env.DEV ? "Not loaded (dev mode)" : "Loaded"],
+          ["Dataverse Publisher Prefix", "cr5ab_"],
         ].map(([label, value]) => (
           <div key={label} className={styles.settingRow}>
             <div className={styles.settingInfo}>

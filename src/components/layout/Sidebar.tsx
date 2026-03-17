@@ -10,11 +10,9 @@ import {
 } from "@fluentui/react-components";
 import {
   GridRegular,
-  ListRegular,
   AddSquareRegular,
-  FolderOpenRegular,
   SettingsRegular,
-  DocumentBulletListRegular,
+  BuildingRegular,
 } from "@fluentui/react-icons";
 import { useAuth } from "../../context/AuthContext";
 
@@ -45,14 +43,17 @@ const useStyles = makeStyles({
     width: "32px",
     height: "32px",
     borderRadius: tokens.borderRadiusMedium,
-    backgroundColor: tokens.colorBrandBackground,
+    backgroundColor: tokens.colorNeutralBackground1,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    color: tokens.colorNeutralForegroundOnBrand,
-    fontSize: "16px",
-    fontWeight: "700",
     flexShrink: 0,
+    overflow: "hidden",
+  },
+  logoImg: {
+    width: "32px",
+    height: "32px",
+    objectFit: "contain",
   },
   logoText: {
     display: "flex",
@@ -156,6 +157,8 @@ interface NavItemDef {
   to: string;
   icon: React.ReactNode;
   end?: boolean;
+  /** Additional path prefixes that should also trigger the active state */
+  alsoActiveFor?: string[];
 }
 
 const primaryNavItems: NavItemDef[] = [
@@ -166,11 +169,6 @@ const primaryNavItems: NavItemDef[] = [
     end: true,
   },
   {
-    label: "Bid Register",
-    to: "/bid-register",
-    icon: <ListRegular />,
-  },
-  {
     label: "New Bid",
     to: "/new-bid",
     icon: <AddSquareRegular />,
@@ -179,14 +177,10 @@ const primaryNavItems: NavItemDef[] = [
 
 const workspaceNavItems: NavItemDef[] = [
   {
-    label: "Bid Workspace",
-    to: "/workspace",
-    icon: <FolderOpenRegular />,
-  },
-  {
-    label: "Documents",
-    to: "/workspace/documents",
-    icon: <DocumentBulletListRegular />,
+    label: "Bid Workspaces",
+    to: "/bid-register",
+    icon: <BuildingRegular />,
+    alsoActiveFor: ["/workspace"],
   },
 ];
 
@@ -208,7 +202,8 @@ function SidebarNavItem({ item }: { item: NavItemDef }) {
 
   const isActive = item.end
     ? location.pathname === item.to
-    : location.pathname.startsWith(item.to);
+    : location.pathname.startsWith(item.to) ||
+      (item.alsoActiveFor?.some((p) => location.pathname.startsWith(p)) ?? false);
 
   return (
     <Tooltip content={item.label} relationship="label" positioning="after">
@@ -242,7 +237,9 @@ export function Sidebar() {
     <aside className={styles.sidebar} aria-label="Main navigation">
       {/* Logo */}
       <div className={styles.logoSection}>
-        <div className={styles.logoIcon}>R</div>
+        <div className={styles.logoIcon}>
+          <img src="/ricoh-logo-new.png" alt="Ricoh" className={styles.logoImg} />
+        </div>
         <div className={styles.logoText}>
           <Text weight="semibold" size={300}>
             Ricoh
@@ -267,10 +264,10 @@ export function Sidebar() {
 
         <Divider className={styles.divider} />
 
-        {/* Workspaces */}
+        {/* Bid Workspaces */}
         <div className={styles.navGroup}>
           <Text className={styles.navGroupLabel} size={100} weight="semibold">
-            Workspace
+            Bid Workspaces
           </Text>
           {workspaceNavItems.map((item) => (
             <SidebarNavItem key={item.to} item={item} />
